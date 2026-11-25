@@ -180,3 +180,20 @@ function autoLink(p){const A=p.acts;A.forEach(a=>a.preds=(a.preds||[]).filter(q=
   for(const c of Cn){const has=new Set(c.preds.map(x=>x[0]));const m=P.filter(q=>!has.has(q.id)&&hit(q,c));if(!m.length)continue;const q=m.sort((x,y)=>td(x.pf)-td(y.pf)).pop(),mr=q.steps?.[7]?.[1];
     c.preds.push([q.id,'FS',mr?-dd(q.pf,mr):0,'auto']);n++}
   p.autoLinks=n;return n}
+
+/* ---------- sign-in page: sign up and forgot password ---------- */
+{const L0=loginView;loginView=function(err=''){L0(err);const f=$('#lf');if(!f)return;
+  const nt=f.querySelector('p.note'),bx=document.createElement('div');bx.style.cssText='display:flex;gap:10px;flex-wrap:wrap';
+  bx.innerHTML='<button type="button" id="lSu">Sign up (new user)</button><button type="button" id="lFg">Forgot password?</button>';f.insertBefore(bx,nt);
+  const pw=(id,l)=>`<label class="f">${l}<input id="${id}" type="password" autocomplete="new-password"></label>`;
+  $('#lSu').onclick=()=>{dialog('Sign up',`<p class="note" style="margin-top:0">Create your account for ${esc(DB.org?.name||'this organization')}. New accounts can view all reports; an administrator can give planner or admin rights under Organization &amp; users.</p>
+    <div class="form" style="margin:0"><label class="f">Your name<input id="suN" autocomplete="name"></label><label class="f">User name (e.g. your email)<input id="suU" autocomplete="username"></label>${pw('suP','Password (6+ characters)')}${pw('suP2','Repeat password')}</div>`,
+    [['Create account',async()=>{const n=$('#suN').value.trim(),u=$('#suU').value.trim().toLowerCase(),p1=$('#suP').value;
+      if(!u)return toast('Enter a user name');if(DB.users.some(x=>x.u===u))return toast('That user name is already taken: use Sign in or Forgot password');if(p1.length<6)return toast('Use a password of at least 6 characters');if(p1!==$('#suP2').value)return toast('The two passwords differ');
+      const salt=Math.random().toString(36).slice(2),x={u,name:n||u,role:DB.users.some(z=>z.role==='admin')?'viewer':'admin',salt,h:await hash(salt+p1),created:ds(Date.now())};DB.users.push(x);save();$('#dlg').close();enter(x);toast('Account created. Welcome, '+x.name)},'pri']]);setTimeout(()=>$('#suN')?.focus(),50)};
+  $('#lFg').onclick=()=>{dialog('Reset password',`<p class="note" style="margin-top:0">Enter your user name and your organization's name exactly as registered, then choose a new password.</p>
+    <div class="form" style="margin:0"><label class="f">User name<input id="fgU" autocomplete="username" value="${esc($('#lu')?.value||'')}"></label><label class="f">Organization name<input id="fgO" autocomplete="organization"></label>${pw('fgP','New password (6+ characters)')}${pw('fgP2','Repeat new password')}</div>`,
+    [['Set new password',async()=>{const u=$('#fgU').value.trim().toLowerCase(),x=DB.users.find(z=>z.u===u),norm=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+      if(!x||norm($('#fgO').value)!==norm(DB.org?.name))return toast('User name or organization name does not match');const p1=$('#fgP').value;
+      if(p1.length<6)return toast('Use a password of at least 6 characters');if(p1!==$('#fgP2').value)return toast('The two passwords differ');
+      x.salt=Math.random().toString(36).slice(2);x.h=await hash(x.salt+p1);delete x.must;save();$('#dlg').close();loginView('Password changed. Sign in with your new password.');$('#lu')&&($('#lu').value=u)},'pri']]);setTimeout(()=>$('#fgU')?.focus(),50)}}}
