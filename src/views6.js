@@ -103,7 +103,7 @@ const MS_BACK=[-150,-135,-120,-110,-95,-80,-10,0,3,30];
 function mciActs(p,res){const old=p.acts.filter(a=>a.d==='P'),used=new Set();let skip=0,guess=0;const nc=res.items.filter(i=>i.cost==null).length;
   const per=nc?(p.contractValue>0?p.contractValue*(p.weights?.P||.5)/res.items.length:1):0;
   const acts=res.items.map(it=>{let m10,pct,free=false;
-    if(it.simple){const S=it.simple,R=S.req||(S.pod&&addD(S.pod,120));if(!R){skip++;return null}free=/free issue|client supply|owner supply/i.test(it.vendor+' '+it.status);
+    if(it.simple){const S=it.simple,R=S.req||(S.pod&&addD(S.pod,120));if(!R){skip++;return null}it._R=R;free=/free issue|client supply|owner supply/i.test(it.vendor+' '+it.status);
       const rec=S.rec||(/^received|delivered|grn/i.test(it.status)?(S.exp||R):null),po=S.pod||(rec&&!free?addD(rec,-90):null);
       m10=MS_BACK.map((o,i)=>{const pl=free&&i<7?null:addD(R,o);let ac=null;if(i<=3&&po)ac=po;if(i>=4&&i<=7&&rec)ac=i===7?rec:(i===6?addD(rec,-2):po&&td(po)>td(addD(rec,-30))?po:addD(rec,-30));if(i===8&&rec&&/grn|received|closed/i.test(it.status))ac=rec;
         const fc=i===7&&!rec?S.exp:null;return [pl,fc,ac]});
@@ -115,8 +115,9 @@ function mciActs(p,res){const old=p.acts.filter(a=>a.d==='P'),used=new Set();let
     const a={id:m?.id||nextId(p,'P',used),d:'P',l2,l3:it.vendor&&!/to be ordered/i.test(it.vendor)?it.vendor:'Vendor not finalised',name,ps:plans[0],pf:plans[plans.length-1],fs:null,
       ff:pct<1?(m10[9][1]||(it.simple&&it.simple.exp&&!it.simple.rec?addD(it.simple.exp,33):null)):null,as:acts_[0]||null,af:pct>=.999?acts_[acts_.length-1]:null,pct:Math.round(pct*1e4)/1e4,cost:it.cost??(m?.cost||Math.round(per*1000)/1000),qty:it.qty||1,uom:it.uom||'Lot',
       res:m?.res||'Buyer / expediter',crew:m?.crew??.1,prof:'Linear',status:it.status||(MS[acts_.length-1]||'Enquiry not floated'),itype:it.type,buyer:it.buyer,po:it.po,subsys:it.subsys,batch:it.batch,freeIssue:free||undefined,
-      steps:m10.map((x,i)=>[MS[i],x[0],x[2],x[1]]),preds:m?.preds||[],reason:it.remark||m?.reason||'',src:'MCI',planGuess:it.simple?1:undefined};
+      steps:m10.map((x,i)=>[MS[i],x[0],x[2],x[1]]),preds:m?.preds||[],reason:it.remark||m?.reason||'',src:'MCI',planGuess:it.simple?1:undefined,reqDate:it._R||m10[7][0]||undefined};
     if(a.ff&&td(a.ff)<td(a.ps))a.ff=null;if(a.pf===a.ps)a.pf=addD(a.ps,1);return a}).filter(Boolean);
+  if(nc){const tot=p.contractValue>0?p.contractValue*(p.weights?.P||.5):0;estValues(acts,tot)}
   return {acts,skip,guess,noCost:nc}}
 function applyImport(d,acts,o){const p=P(),had=p.acts.length;
   if(o.mode==='replace')p.acts=p.acts.filter(a=>a.d!==d);else{const ids=new Set(acts.map(a=>a.id));p.acts=p.acts.filter(a=>!ids.has(a.id))}
@@ -138,15 +139,15 @@ function impBind(d){const inp=$('#imp'+d),out=$('#imp'+d+'o');if(!inp)return;con
       const st={};acts.forEach(a=>st[a.status]=(st[a.status]||0)+1);const ex=P().acts.filter(a=>a.d===d).length;
       out.innerHTML=`<div class="callout ok" style="margin-top:10px"><b>${acts.length} ${I.k} found</b> in ${esc(f.name)} (${res.sheets.map(([s,n])=>esc(s)+': '+n).join(', ')})${skip?`; ${skip} rows without any plan date were left out`:''}.
         ${res.date?` File status date ${fD(res.date)}.`:''}</div>
-       ${guess?`<div class="callout" style="margin-top:8px">${d==='E'?`${guess} documents have no planned submission date in the file, so the app planned them: ${res.review||14}-day review, design documents early in the project, testing and handover documents near the end. Fill in the planned dates in the DCI and import again to replace them.`:`The file gives a required-at-works date per item, so the 10 procurement milestones (enquiry to payment) were planned back from it. Free-issue items count only on receipt.`}</div>`:''}
-       ${noCost?`<div class="callout" style="margin-top:8px">The file has no item values, so each item gets an equal share of the procurement weight. Enter item values in Schedule to weight them by cost.</div>`:''}
+       ${guess?`<div class="callout info" style="margin-top:8px"><b>Planned by the app (you can change every date after import, in “Edit plan” below):</b> ${d==='E'?`${guess} documents have no planned submission date in the file, so the app planned them: ${res.review||14}-day review, design documents early in the project, testing and handover documents near the end. `:`The file gives a required-at-works date per item, so the 10 procurement milestones (enquiry to payment) were planned back from it. Free-issue items count only on receipt.`}</div>`:''}
+       ${noCost?`<div class="callout info" style="margin-top:8px"><b>Item values estimated:</b> the file has no item values, so ${P().contractValue>0?`the procurement share of the contract value (${nf(P().contractValue*(P().weights?.P||.5),0)} ${esc(P().currency)}) is split across items by equipment type (RMU, transformer, LT panel and UPS weigh most)`:`each item is weighted by equipment type (enter the contract value under Projects &amp; registration to get values in money)`}. Change any value after import in “Edit plan” below.</div>`:''}
        <div class="grid2"><div><h3>Status</h3><table><tbody>${Object.entries(st).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<tr><td>${esc(k)}</td><td class="n">${v}</td></tr>`).join('')}</tbody></table>
         <p class="note">Progress after import: ${pc(sum(acts,a=>a.cost*a.pct)/(sum(acts,a=>a.cost)||1))} (weighted by ${d==='E'?'drawing':'item value'}).</p></div>
        <div><h3>Import options</h3><label class="f">This project has ${ex} ${d==='E'?'engineering':'procurement'} activities<select id="imp${d}m"><option value="replace">Replace them with the file</option><option value="merge">Update matching ones, add new, keep the rest</option></select></label>
         ${res.date?`<label style="display:flex;gap:8px;align-items:center;margin:8px 0"><input type="checkbox" id="imp${d}dd" ${td(res.date)!==td(P().dataDate)?'checked':''}> Set the data date to the file's status date (${fD(res.date)})</label>`:''}
         <div class="tools"><button class="go" id="imp${d}go">Import into ${esc(P().name)}</button><button id="imp${d}x">Cancel</button></div></div></div>
-       <h3>First rows</h3><div class="scroll"><table><thead><tr><th>ID</th><th>${d==='E'?'Drawing':'Item'}</th><th>${d==='E'?'Doc no.':'Vendor'}</th><th>Status</th><th>Planned start</th><th>Planned finish</th><th class="n">Progress</th></tr></thead><tbody>
-        ${acts.slice(0,8).map(a=>`<tr><td>${a.id}</td><td>${esc(a.name.slice(0,70))}</td><td>${esc(d==='E'?a.docNo||'':a.l3)}</td><td>${esc(a.status)}</td><td class="d">${fD(a.ps)}</td><td class="d">${fD(a.pf)}</td><td class="n">${pc(a.pct,0)}</td></tr>`).join('')}</tbody></table></div>`;
+       <h3>All rows (${acts.length})</h3><div class="scroll" style="max-height:420px;overflow:auto"><table><thead><tr><th>ID</th><th>${d==='E'?'Drawing':'Item'}</th><th>${d==='E'?'Doc no.':'Vendor'}</th><th>Status</th><th>Planned start</th><th>Planned finish</th><th class="n">Progress</th></tr></thead><tbody>
+        ${acts.map(a=>`<tr><td>${a.id}</td><td>${esc(a.name.slice(0,70))}</td><td>${esc(d==='E'?a.docNo||'':a.l3)}</td><td>${esc(a.status)}</td><td class="d">${fD(a.ps)}</td><td class="d">${fD(a.pf)}</td><td class="n">${pc(a.pct,0)}</td></tr>`).join('')}</tbody></table></div>`;
       $('#imp'+d+'x').onclick=()=>{out.innerHTML='';inp.value=''};
       $('#imp'+d+'go').onclick=()=>{const o={mode:$('#imp'+d+'m').value,date:$('#imp'+d+'dd')?.checked?res.date:null,file:f.name};applyImport(d,acts,o);
         toast(`${acts.length} ${I.k} imported from ${f.name}; ${P().autoLinks||0} schedule links to ${d==='E'?'procurement':'engineering and construction'} made`);route()}}
@@ -197,3 +198,92 @@ function autoLink(p){const A=p.acts;A.forEach(a=>a.preds=(a.preds||[]).filter(q=
       if(!x||norm($('#fgO').value)!==norm(DB.org?.name))return toast('User name or organization name does not match');const p1=$('#fgP').value;
       if(p1.length<6)return toast('Use a password of at least 6 characters');if(p1!==$('#fgP2').value)return toast('The two passwords differ');
       x.salt=Math.random().toString(36).slice(2);x.h=await hash(x.salt+p1);delete x.must;save();$('#dlg').close();loginView('Password changed. Sign in with your new password.');$('#lu')&&($('#lu').value=u)},'pri']]);setTimeout(()=>$('#fgU')?.focus(),50)}}}
+
+/* ---------- editable plan grid with bulk tools (engineering + procurement) ---------- */
+const PFAC=[[/rmu|ring main/i,10],[/transformer/i,12],[/mltp|main lt panel|pcc|power control|switch ?board/i,10],[/output panel|pdu|cdu/i,5],[/\bups\b/i,12],[/skid|base frame|structur/i,6],[/switchgear comp/i,3],[/meter|protection|relay/i,2],[/busbar|bus ?duct/i,3],[/ht cable|33 ?kv cable|11 ?kv cable/i,4],[/tray|earthing|cable/i,2],[/marshalling|junction/i,1.5],[/fire|detection/i,1.5],[/label|nameplate/i,.5],[/chiller|dg|generator/i,12],[/pump/i,4]];
+const pFactor=a=>{for(const [r,f] of PFAC)if(r.test(a.name))return f;return 2};
+function estValues(A,total){const F=A.map(a=>(a.freeIssue?.2:1)*pFactor(a)),t=sum(F)||1;A.forEach((a,i)=>{a.cost=total>0?Math.round(total*F[i]/t*1000)/1000:F[i];a.valEst=1})}
+const MSB=[-150,-135,-120,-110,-95,-80,-10,0,3,30];
+const r4_=x=>Math.round(x*1e4)/1e4;
+function eRecalc(a){const s=a.steps=a.steps||[['First submission',null,null],['Approval',null,null]];
+  if(s[0][1]&&!s[1][1])s[1][1]=addD(s[0][1],14);if(s[0][1])a.ps=addD(s[0][1],-15);if(s[1][1])a.pf=s[1][1];if(td(a.pf)<=td(a.ps))a.pf=addD(a.ps,30);
+  if(s[1][2]&&!/^approved|information/i.test(a.status||''))a.status='Approved';if(s[0][2]&&/not (submitted|started)/i.test(a.status||''))a.status='Under review';
+  const appr=/^approved|information/i.test(a.status||'');a.pct=appr?1:(s[0][2]||/review|resubmit|comment/i.test(a.status||''))?.5:0;
+  a.as=s[0][2]?addD(s[0][2],-15):(a.pct>0?a.ps:null);a.af=a.pct>=1?(s[1][2]||s[0][2]||a.pf):null;if(a.as&&a.af&&td(a.af)<td(a.as))a.af=a.as;a.ff=a.pct<1&&a.ff&&td(a.ff)>td(a.ps)?a.ff:null}
+function pReplan(a,R,lead=110){a.steps=a.steps||MS.map(m=>[m,null,null,null]);a.reqDate=R;a.steps.forEach((s,i)=>{if(a.freeIssue&&i<7){s[1]=null;return}s[1]=addD(R,i<6?MSB[i]-(lead-110):MSB[i])})}
+function pRecalc(a){const s=a.steps;const pct=a.freeIssue?(s[7][2]?1:0):Math.min(1,sum(MSW.map((w,i)=>s[i][2]?w:0)));a.pct=r4_(pct);
+  const pl=s.map(x=>x[1]).filter(Boolean).sort(),ac=s.map(x=>x[2]).filter(Boolean).sort();if(pl.length){a.ps=pl[0];a.pf=pl[pl.length-1];if(a.pf===a.ps)a.pf=addD(a.ps,1)}
+  a.as=ac[0]||null;a.af=pct>=.999?ac[ac.length-1]:null;a.ff=pct<1&&s[7][3]&&!s[7][2]?addD(s[7][3],33):null;
+  a.status=s[7][2]?(s[8][2]?'GRN raised':'Received'):s[3][2]?'PO placed':(a.freeIssue?'Awaiting free issue':'PO not placed')}
+function pSetPO(a,d){for(let i=0;i<=3;i++)a.steps[i][2]=d||null}
+function pSetRec(a,d){const po=a.steps[3][2];a.steps[7][2]=d||null;a.steps[6][2]=d?addD(d,-2):null;for(const i of [4,5])a.steps[i][2]=d?(po&&td(po)>td(addD(d,-30))?po:addD(d,-30)):null}
+const EST=['Not submitted','Under review','Revise and resubmit','Approved with comments','Approved','For information'];
+const EDO={E:false,P:false};
+function edGrid(d){const p=P(),A=p.acts.filter(a=>a.d===d&&!a.ms);if(!A.length||!can('edit'))return '';
+  const nG=A.filter(a=>a.planGuess).length,nV=A.filter(a=>a.valEst).length,di=(id,k,v)=>`<input type="date" data-ed="${id}|${k}" value="${esc(v||'')}">`;
+  const discs=[...new Set(A.map(a=>a.l3))];
+  if(d==='E'){const sts=[...new Set([...EST,...A.map(a=>a.status).filter(Boolean)])];
+    return `<details class="card" id="ed${d}" ${EDO[d]?'open':''} style="margin-bottom:14px"><summary style="cursor:pointer"><b>Edit plan: dates and status of all ${A.length} documents</b> ${nG?`<span class="tag as">${nG} with app-planned dates</span>`:''}</summary>
+     <div class="callout info" style="margin:10px 0">Change any date or status below; progress, S-curves, SPI, look-aheads and the schedule update when you click <b>Apply changes</b>. Bulk tool: spread planned submissions evenly between two dates.</div>
+     <div class="tools" style="align-items:end;flex-wrap:wrap"><label class="f">Discipline<select id="bkD"><option value="">All</option>${discs.map(x=>`<option>${esc(x)}</option>`).join('')}</select></label>
+      <label class="f">Rows<select id="bkW"><option value="g">Only app-planned</option><option value="a">All rows</option></select></label>
+      <label class="f">First submission from<input type="date" id="bk1" value="${esc(addD(p.dataDate,7))}"></label><label class="f">to<input type="date" id="bk2" value="${esc(addD(p.dataDate,90))}"></label>
+      <label class="f">Review days<input type="number" id="bkR" value="14" style="width:70px"></label><button id="bkGo">Spread dates</button><button class="go" id="edApply">Apply changes</button></div>
+     <div class="scroll ed" style="max-height:520px;overflow:auto"><table><thead><tr><th>ID</th><th>Document</th><th>Discipline</th><th>Planned submission</th><th>Planned approval</th><th>Actual submission</th><th>Actual approval</th><th>Status</th></tr></thead><tbody>
+     ${A.map(a=>`<tr><td>${a.id}${a.planGuess?' <span class="tag as" title="Dates planned by the app">plan</span>':''}</td><td title="${esc(a.docNo||'')}">${esc(a.name.slice(0,60))}</td><td>${esc(a.l3)}</td><td>${di(a.id,'s01',a.steps?.[0]?.[1])}</td><td>${di(a.id,'s11',a.steps?.[1]?.[1])}</td><td>${di(a.id,'s02',a.steps?.[0]?.[2])}</td><td>${di(a.id,'s12',a.steps?.[1]?.[2])}</td>
+       <td><select data-ed="${a.id}|status">${sts.map(s=>`<option ${s===a.status?'selected':''}>${esc(s)}</option>`).join('')}</select></td></tr>`).join('')}</tbody></table></div></details>`}
+  const tot=sum(A,a=>a.cost||0);
+  return `<details class="card" id="ed${d}" ${EDO[d]?'open':''} style="margin-bottom:14px"><summary style="cursor:pointer"><b>Edit plan: dates, values and status of all ${A.length} items</b> ${nG?`<span class="tag as">${nG} with app-planned milestones</span>`:''} ${nV?`<span class="tag as">${nV} estimated values</span>`:''}</summary>
+   <div class="callout info" style="margin:10px 0">Milestones (enquiry → payment) are planned back from <b>Required at works</b> using the PO lead time; change a required date, PO date or receipt and click <b>Apply changes</b>. Bulk tools: set the PO lead time, or split a total value across items by equipment type.</div>
+   <div class="tools" style="align-items:end;flex-wrap:wrap"><label class="f">PO lead time (days before required at works)<input type="number" id="bkL" value="${esc(p.poLead||110)}" style="width:80px"></label><button id="bkLGo">Re-plan milestones</button>
+    <label class="f">Total procurement value (${esc(p.currency)})<input type="number" id="bkV" step="any" value="${esc(r2(tot||(p.contractValue*(p.weights?.P||.5))||0))}" style="width:120px"></label><label class="f">Items<select id="bkVW"><option value="e">Only estimated</option><option value="a">All items</option></select></label><button id="bkVGo">Split by equipment type</button>
+    <button class="go" id="edApply">Apply changes</button></div>
+   <div class="scroll ed" style="max-height:520px;overflow:auto"><table><thead><tr><th>ID</th><th>Item</th><th>Vendor</th><th class="n">Value</th><th>Required at works</th><th>PO date</th><th>Expected delivery</th><th>Actual receipt</th><th>Free issue</th><th>Status</th></tr></thead><tbody>
+   ${A.map(a=>`<tr><td>${a.id}${a.planGuess?' <span class="tag as" title="Milestones planned by the app">plan</span>':''}</td><td>${esc(a.name.slice(0,60))}</td><td>${esc(a.l3)}</td><td class="n"><input type="number" step="any" data-ed="${a.id}|cost" value="${esc(a.cost??'')}"${a.valEst?' title="Estimated value" style="background:light-dark(#fff3c4,#4a3d00)"':''}></td>
+     <td>${di(a.id,'req',a.reqDate||a.steps?.[7]?.[1])}</td><td>${di(a.id,'po',a.steps?.[3]?.[2])}</td><td>${di(a.id,'exp',a.steps?.[7]?.[3])}</td><td>${di(a.id,'rec',a.steps?.[7]?.[2])}</td>
+     <td><input type="checkbox" data-ed="${a.id}|free" ${a.freeIssue?'checked':''}></td><td>${esc(a.status||'')}</td></tr>`).join('')}</tbody></table></div></details>`}
+function edBind(d){const box=$('#ed'+d);if(!box)return;const p=P(),by={};p.acts.forEach(a=>by[a.id]=a);box.ontoggle=()=>EDO[d]=box.open;
+  box.querySelectorAll('[data-ed]').forEach(el=>el.onchange=()=>{const [id,k]=el.dataset.ed.split('|'),a=by[id],v=el.type==='checkbox'?el.checked:el.value;
+    if(d==='E'){if(k==='status')a.status=v;else{const i=+k[1],j=+k[2];a.steps=a.steps||[['First submission',null,null],['Approval',null,null]];a.steps[i][j]=v||null;if(j===1)delete a.planGuess}eRecalc(a)}
+    else{if(k==='cost'){a.cost=+v||0;delete a.valEst}else if(k==='req'){if(v){pReplan(a,v,p.poLead||110);delete a.planGuess}}else if(k==='po')pSetPO(a,v);else if(k==='rec')pSetRec(a,v);else if(k==='exp')a.steps[7][3]=v||null;
+      else if(k==='free'){a.freeIssue=v||undefined;if(a.reqDate||a.steps[7][1])pReplan(a,a.reqDate||a.steps[7][1],p.poLead||110)}pRecalc(a)}
+    save();el.style.outline='2px solid var(--act)'});
+  const ap=$('#edApply');ap&&(ap.onclick=()=>{autoLink(p);save();route();toast('Changes applied to the schedule and reports')});
+  if(d==='E')$('#bkGo').onclick=()=>{const dis=$('#bkD').value,w=$('#bkW').value,d1=$('#bk1').value,d2=$('#bk2').value,rv=+$('#bkR').value||14;if(!d1||!d2||td(d2)<td(d1))return toast('Choose a valid date range');
+    const A=p.acts.filter(a=>a.d==='E'&&!a.ms&&(!dis||a.l3===dis)&&(w==='a'||a.planGuess));if(!A.length)return toast('No rows match');const span=dd(d2,d1);
+    A.forEach((a,i)=>{a.steps=a.steps||[['First submission',null,null],['Approval',null,null]];a.steps[0][1]=addD(d1,Math.round(A.length>1?i*span/(A.length-1):0));a.steps[1][1]=addD(a.steps[0][1],rv);delete a.planGuess;eRecalc(a)});
+    autoLink(p);save();EDO.E=true;route();toast(`Planned dates set for ${A.length} documents`)};
+  if(d==='P'){$('#bkLGo').onclick=()=>{const L=+$('#bkL').value||110;p.poLead=L;let n=0;p.acts.filter(a=>a.d==='P'&&!a.ms).forEach(a=>{const R=a.reqDate||a.steps?.[7]?.[1];if(R&&!a.steps[3][2]){pReplan(a,R,L);pRecalc(a);n++}});autoLink(p);save();EDO.P=true;route();toast(`Milestones re-planned for ${n} items without a PO`)};
+    $('#bkVGo').onclick=()=>{const T=+$('#bkV').value;if(!(T>0))return toast('Enter the total value');const all=$('#bkVW').value==='a',A=p.acts.filter(a=>a.d==='P'&&!a.ms&&(all||a.valEst||!a.cost));if(!A.length)return toast('No items to value');
+      const fixed=all?0:sum(p.acts.filter(a=>a.d==='P'&&!a.ms&&!A.includes(a)),a=>a.cost||0);estValues(A,Math.max(0,T-fixed));save();EDO.P=true;route();toast(`Values set for ${A.length} items`)}}}
+for(const [v,d] of [['engineering','E'],['procurement','P']]){const f=V[v],g=f.after;
+  V[v]=()=>{const h=f(),e=edGrid(d);if(!e)return h;const i=h.indexOf('<div class="kpis">');return i<0?h+e:h.slice(0,i)+e+h.slice(i)};V[v].after=()=>{g&&g();edBind(d)}}
+
+/* ---------- baseline lock: once locked, only progress can be updated; forecast completion reschedules from progress ---------- */
+const LOCKED=()=>!!P().baseline;
+function lockBaseline(){const p=P();p.acts.forEach(a=>{a.bs=a.ps;a.bf=a.pf;a.bcost=a.cost});p.baseline={at:ds(Date.now()),by:ME?.name||ME?.u||'',start:p.start,finish:p.finish,cdd:p.cdd,n:p.acts.length,value:sum(p.acts,a=>a.cost||0)};save();route();toast('Baseline locked: from now on only progress is updated')}
+function baseBar(){const p=P();if(!p.acts.length)return '';const b=p.baseline,cx=C(),g=Math.round((cx.pEF-td(p.finish))/DAY);
+  if(b)return `<div class="callout info" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between"><div><b>Baseline locked</b> on ${fD(b.at)}${b.by?' by '+esc(b.by):''}: ${b.n} activities, planned completion ${fD(b.finish)}. Only progress (actual dates, % complete, status, forecasts) can be updated; the forecast completion is rescheduled from progress: <b>${fT(cx.pEF)}</b> (${g>0?g+' days late':'on time'}).</div>${ME?.role==='admin'?'<button id="blUn">Unlock (admin)</button>':''}</div>`;
+  return can('admin')?`<div class="callout" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between"><div><b>Schedule not locked yet.</b> Review the plan (dates, values, links), then lock it as the baseline. After locking, only progress can be updated and the forecast completion reschedules from it.</div><button class="go" id="blLock">Lock baseline</button></div>`:''}
+function baseBind(){$('#blLock')&&($('#blLock').onclick=()=>dialog('Lock baseline',`<p>Lock the current schedule of <b>${esc(P().name)}</b> (${P().acts.length} activities, planned completion ${fD(P().finish)}) as the baseline?</p><p class="note">After this, planned dates, values, links and activities cannot be changed; DCI / MCI imports update progress only.</p>`,[['Lock baseline',()=>{$('#dlg').close();lockBaseline()},'go']]));
+  $('#blUn')&&($('#blUn').onclick=()=>dialog('Unlock baseline',`<p>Unlock the baseline of <b>${esc(P().name)}</b>? Planned dates become editable again. Lock it again after re-planning.</p>`,[['Unlock',()=>{delete P().baseline;save();$('#dlg').close();route();toast('Baseline unlocked')},'pri']]))}
+for(const v of ['schedule','overview','engineering','procurement','update']){const f=V[v],g=f&&f.after;if(!f)continue;
+  V[v]=()=>{const h=f(),bar=baseBar();if(!bar)return h;const k=h.indexOf('</div></div>',h.indexOf('<div class="top">'));return k<0?bar+h:h.slice(0,k+12)+bar+h.slice(k+12)};V[v].after=()=>{g&&g();baseBind()}}
+const dropEl=el=>el&&el.parentNode&&el.parentNode.removeChild(el);
+{const g=V.schedule.after;V.schedule.after=()=>{g&&g();if(LOCKED())dropEl($('#sAdd'))}}
+{const e0=editAct;editAct=function(id){e0(id);if(!LOCKED())return;
+  ['id','d','l2','l3','name','ps','pf','qty','uom','cost','prof','res','crew','ch0','ch1','preds'].forEach(k=>{const el=$('#ea_'+k);if(el){el.disabled=true;el.title='Locked in the baseline'}});
+  [...$('#dlg').querySelectorAll('button')].filter(b=>b.textContent.trim()==='Delete').forEach(dropEl);
+  $('#dlgB').insertAdjacentHTML('afterbegin','<div class="callout info" style="margin-top:0">Baseline locked: only progress fields (forecast / actual dates, % complete, actual cost) can be changed.</div>')}}
+{const g=V.register.after;V.register.after=()=>{g&&g();if(!LOCKED())return;['start','cdd','finish','wE','wP','wC'].forEach(k=>{const el=$(`#pf [name="${k}"]`);if(el){el.readOnly=true;el.title='Locked in the baseline'}});$$('[data-cw],[data-z0],[data-z1]').forEach(el=>el.readOnly=true);if(ME?.role!=='admin')dropEl($('#delP'))}}
+setTimeout(()=>{const g=V.export&&V.export.after;if(!V.export)return;V.export.after=()=>{g&&g();const x=$('#xImp');if(LOCKED()&&x){x.disabled=true;x.closest('label')?.insertAdjacentHTML('afterend','<span class="note"> CSV import is off while the baseline is locked.</span>')}}});
+{const g=V.autoschedule.after;V.autoschedule.after=()=>{g&&g();if(!LOCKED())return;const s=$('[data-as="target"]');if(s){const o=s.querySelector('option[value="cur"]');if(o){o.disabled=true;o.textContent+=' (baseline locked)'}if(s.value==='cur'){s.value='new';s.dispatchEvent(new Event('change'))}}}}
+{const g=edBind;edBind=function(d){g(d);if(!LOCKED())return;const box=$('#ed'+d);if(!box)return;
+  box.querySelectorAll(d==='E'?'[data-ed$="|s01"],[data-ed$="|s11"]':'[data-ed$="|cost"],[data-ed$="|req"],[data-ed$="|free"]').forEach(el=>{el.disabled=true;el.title='Locked in the baseline'});
+  ['bkGo','bkLGo','bkVGo'].forEach(id=>{const b=$('#'+id);if(b){b.disabled=true;b.title='Baseline locked'}});
+  box.querySelector('.callout.info')?.insertAdjacentHTML('beforeend',' <b>Baseline locked:</b> planned dates and values are read-only; enter actuals and status.')}}
+{const a0=applyImport;applyImport=function(d,acts,o){const p=P();if(!p.baseline)return a0(d,acts,o);const by={};p.acts.forEach(a=>by[a.id]=a);let n=0,skip=0;
+  acts.forEach(x=>{const a=by[x.id];if(!a||a.d!==d){skip++;return}n++;Object.assign(a,{status:x.status,pct:x.pct,as:x.as,af:x.af,ff:x.ff,reason:x.reason||a.reason});
+    if(a.steps&&x.steps)a.steps.forEach((s,i)=>{if(x.steps[i]){s[2]=x.steps[i][2];if(s.length>3||x.steps[i].length>3)s[3]=x.steps[i][3]??s[3]}});if(d==='E')eRecalc(a);else if(a.steps?.length>=10)pRecalc(a)});
+  if(o.date)p.dataDate=o.date;(p.imports=p.imports||[]).push({d,file:o.file,at:new Date().toISOString(),n,by:ME?.u||'',progressOnly:1,skipped:skip});save()}}
+{const b0=impBind;impBind=function(d){b0(d);const inp=$('#imp'+d);if(!inp||!LOCKED())return;inp.closest('.card')?.querySelector('.note')?.insertAdjacentHTML('beforeend',' <b>Baseline locked:</b> importing updates progress (actual dates, status) of existing items only.')}}
