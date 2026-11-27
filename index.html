@@ -76,6 +76,7 @@ label.f input,label.f select,label.f textarea{color:var(--ink)}
 .note{font-size:13px;color:var(--mute);margin:6px 0 12px}
 .callout{background:var(--pink);border-radius:8px;padding:10px 14px;margin:0 0 14px;color:light-dark(#4a0f20,#ffe6ec)}
 .callout.ok{background:#00a86b22;color:inherit}
+.plT{border-collapse:collapse;font-size:12.5px}.plT th{position:sticky;top:0;z-index:3;height:30px;background:var(--sheet);text-align:left;padding:0 4px;white-space:nowrap;box-sizing:border-box}.plT td{height:28px;padding:0 4px;white-space:nowrap;border:0;box-sizing:border-box}.plT tr{height:28px}.plT input{font:inherit;font-size:12.5px;height:22px;padding:1px 4px;border:1px solid transparent;border-radius:4px;background:transparent;color:inherit;box-sizing:border-box}.plT input:hover:not(:disabled),.plT input:focus{border-color:var(--line);background:var(--bg)}.plT input[type=date]{width:122px}.plS td{background:light-dark(#eef1ef,#17211e)}.plT input{min-height:0!important;vertical-align:middle;margin:0}.plT td input{width:auto;min-height:0!important}.plT input[type=checkbox]{width:14px;height:14px}.plT input[type=number]{text-align:right}.plT td,.plT th{vertical-align:middle;line-height:1}.pl svg text{user-select:none}.plMs{color:var(--plan);font-size:11px;margin-right:2px}.chk{display:grid;grid-template-columns:1fr 1fr;gap:6px 16px}.chk label{display:flex;gap:6px;align-items:center}.chk input{width:auto;min-height:0}.plSel td{background:light-dark(#dff3ea,#123326)!important}
 .callout.info{background:light-dark(#e8f0fb,#1d2a3a);color:inherit}
 .ed td{padding:3px 6px}.ed input,.ed select{font:inherit;font-size:13px;padding:3px 4px;min-width:0;max-width:150px}.ed input[type=number]{width:90px}.tag.as{background:light-dark(#fff3c4,#4a3d00);color:inherit}
 /* gantt */
@@ -100,11 +101,80 @@ dialog .df{padding:12px 18px;border-top:1px solid var(--line);display:flex;gap:8
 textarea.code{width:100%;min-height:260px;font:12px/1.4 ui-monospace,monospace}
 #toast{position:fixed;bottom:18px;right:18px;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:99;max-width:80vw}
 #toast.on{opacity:1}
+/* ===== premium skin: soft canvas, raised cards, quiet controls ===== */
+:root{--canvas:light-dark(#f3f5f7,#070c0b);--card:light-dark(#ffffff,#0f1816);--sh1:0 1px 2px light-dark(#0f14120f,#0006),0 1px 3px light-dark(#0f14120d,#0004);--sh2:0 4px 14px light-dark(#0f141214,#0008),0 1px 3px light-dark(#0f14120f,#0006);--r:12px;--accent2:#00c27c}
+body{background:var(--canvas);font-size:14.5px;-webkit-font-smoothing:antialiased}
+main{padding:20px clamp(14px,2.6vw,34px) 64px}
+nav.rail{background:linear-gradient(180deg,#0d1513 0%,#0a100f 100%);border-right:1px solid #1b2622;padding:16px 10px}
+.brand{font-size:18px;letter-spacing:-.01em;padding:6px 10px 16px;display:flex;flex-direction:column}
+.rail h6{text-transform:uppercase;letter-spacing:.08em;font-size:11px;font-weight:700;color:#62726b;margin:18px 10px 6px}
+.rail a{font-size:13.5px;padding:7px 10px 7px 12px;border-radius:8px;color:#c9d3cf;transition:background .15s,color .15s;position:relative}
+.rail a:hover{background:#17221f;color:#fff}
+.rail a.on{background:linear-gradient(90deg,#00a86b2e,#00a86b0d);color:#7ef0bf;font-weight:700}
+.rail a.on::before{content:"";position:absolute;left:0;top:7px;bottom:7px;width:3px;border-radius:3px;background:var(--accent2)}
+.drv{border-radius:9px;background:#121c19;border-color:#25322d}
+.top{border-bottom:1px solid var(--line);padding-bottom:14px}.top>.callout{flex-basis:100%;order:9;margin:6px 0 0}
+.top h1{font-size:clamp(22px,2.4vw,28px);letter-spacing:-.02em;font-weight:800}
+.top .meta{font-size:13px}
+.prof{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px 14px 4px 4px;box-shadow:var(--sh1)}
+.prof img,.prof .av{border-radius:50%!important}
+h2{font-size:16.5px;letter-spacing:-.01em;margin:28px 0 12px}
+h3{font-size:14.5px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;box-shadow:var(--sh1);transition:box-shadow .2s,transform .2s}
+.kpi:hover{box-shadow:var(--sh2);transform:translateY(-1px)}
+.kpi span{font-size:12px;text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+.kpi b{font-variant-numeric:proportional-nums;letter-spacing:-.01em}
+.fig{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh1)}
+.card,.pcard{background:var(--card);border-radius:var(--r);box-shadow:var(--sh1)}
+.pcard{transition:box-shadow .2s,border-color .2s}.pcard:hover{box-shadow:var(--sh2)}
+.scroll,.gantt{background:var(--card);border-radius:var(--r)}
+.scroll:has(>table){border:1px solid var(--line);box-shadow:var(--sh1)}
+table{font-size:13px}
+th{background:light-dark(#f7f9f8,#131d1a);font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--mute);font-weight:700}
+th,td{padding:8px 10px}
+tbody tr{transition:background .12s}tbody tr:hover td{background:light-dark(#f6faf8,#13201c)}
+.tag{border-radius:999px;font-weight:600;font-size:11.5px;padding:2px 9px}
+button,.btn{font-size:13.5px;min-height:34px;padding:6px 13px;border-radius:9px;border:1px solid light-dark(#cfd6d3,#2c3a35);background:var(--card);box-shadow:var(--sh1);font-weight:500;transition:background .15s,box-shadow .15s,transform .1s,border-color .15s}
+button:hover:not(:disabled),.btn:hover{border-color:light-dark(#9fb0a9,#4a5c55);box-shadow:var(--sh2)}
+button:active:not(:disabled){transform:translateY(1px)}
+button:disabled{opacity:.45;cursor:not-allowed}
+button.go{background:linear-gradient(180deg,#00b874,#00a066);border-color:#009860;color:#fff;font-weight:700;text-shadow:0 1px 0 #0002}
+button.go:hover:not(:disabled){background:linear-gradient(180deg,#00c27c,#00a86b)}
+button.pri{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+input,select,textarea{font-size:14px;min-height:36px;border-radius:9px;border-color:light-dark(#d3d9d6,#2a3833);background:var(--card);transition:border-color .15s,box-shadow .15s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--act);box-shadow:0 0 0 3px #00a86b2e}
+button:focus-visible{outline:none;box-shadow:0 0 0 3px #00a86b55}
+.tools{gap:6px;padding:8px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh1)}
+.tools label{font-size:13px;color:var(--mute);display:inline-flex;gap:6px;align-items:center}
+.tools input,.tools select{min-height:34px;font-size:13.5px}
+.tools .sep{width:1px;align-self:stretch;background:var(--line);margin:2px 4px}
+.callout{border-radius:var(--r);border:1px solid light-dark(#ffc2d2,#5a2534)}
+.callout.warn{background:light-dark(#fff7e0,#33290a);color:inherit;border-color:light-dark(#f1d98f,#5a4a10)}
+.callout.ok{border-color:light-dark(#b5e8d3,#164a36)}.callout.info{border-color:light-dark(#c9dcf6,#2a3d55)}
+.note{line-height:1.55}
+dialog{border-radius:16px;box-shadow:0 30px 80px #0007,0 0 0 1px var(--line)}
+dialog::backdrop{background:#0a100eaa;backdrop-filter:blur(3px)}
+dialog .dh{font-weight:700;font-size:16px}
+#toast{border-radius:10px;box-shadow:var(--sh2);font-size:13.5px}
+a{color:light-dark(#007a4e,#5fe0a8)}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:light-dark(#c9d1cd,#2b3833);border-radius:10px;border:2px solid transparent;background-clip:padding-box}::-webkit-scrollbar-track{background:transparent}
+/* planner */
+.pl{background:var(--card);box-shadow:var(--sh1);border-radius:var(--r)!important}
+.plL{background:var(--card)!important}
+.plT th{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--mute);background:light-dark(#f7f9f8,#131d1a)}
+.plT td{border-bottom:1px solid light-dark(#eef1f0,#18231f)!important}
+.plT tbody tr:hover td{background:light-dark(#f3f8f6,#13201c)}
+.plT input[type=date]{width:118px!important}
+.plT input[type=date]::-webkit-calendar-picker-indicator{opacity:0;width:12px;margin:0}
+.plT input[type=date]:hover::-webkit-calendar-picker-indicator,.plT input[type=date]:focus::-webkit-calendar-picker-indicator{opacity:.6}
+.plFull nav.rail{display:none}.plFull .app{grid-template-columns:1fr}.plFull .pl{max-height:calc(100vh - 230px)!important}
+/* login */
+.login,.auth{box-shadow:var(--sh2)}
 .menu-btn{display:none}
 @media(max-width:900px){.app{grid-template-columns:1fr}nav.rail{position:fixed;inset:0 auto 0 0;width:250px;z-index:50;transform:translateX(-100%);transition:transform .2s}
 nav.rail.open{transform:none}.menu-btn{display:inline-flex}}
 @media(max-width:600px){table{font-size:12.5px}.fig{min-height:280px}}
-@media print{nav.rail,.tools,.menu-btn,button{display:none!important}.app{display:block}.gantt{max-height:none}}
+@media print{nav.rail,.tools,.menu-btn,button{display:none!important}.app{display:block}.gantt{max-height:none}.pl{max-height:none!important;overflow:visible!important}.prPlan .pl{zoom:.6}@page{size:A3 landscape;margin:10mm}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -119,6 +189,7 @@ nav.rail.open{transform:none}.menu-btn{display:inline-flex}}
   <a href="#users">Organization &amp; users</a>
   <a href="#update">Progress update</a>
   <a href="#autoschedule">Auto-schedule (PO → delivery)</a>
+  <a href="#plan">Project plan (MS Project style)</a>
   <a href="#schedule">Schedule L0–L5 (Gantt)</a>
   <h6>Discipline reports</h6>
   <a href="#engineering">Engineering status</a>
@@ -137,7 +208,7 @@ nav.rail.open{transform:none}.menu-btn{display:inline-flex}}
   <a href="#la7w">7-week look-ahead</a>
   <h6>Output</h6>
   <a href="#export">Export (MS Project, CSV, backup)</a>
-  <div style="color:#7f8d87;font-size:12px;padding:14px 10px">Version 2026-11-25 08:46 UTC</div>
+  <div style="color:#7f8d87;font-size:12px;padding:14px 10px">Version 2026-11-27 05:34 UTC</div>
 </nav>
 <main id="main"></main>
 </div>
@@ -341,7 +412,7 @@ function compute(p){
     else if(a.pct>0||a.as){ES=td(a.as||a.ps);const rem=Math.max(1,Math.ceil(dur*(1-(a.pct||0))));EF=a.ff&&td(a.ff)>d0?td(a.ff):d0+rem*DAY;st='wip'}
     else{const fdur=a.fs&&a.ff&&dd(a.ff,a.fs)>0?dd(a.ff,a.fs):dur;let s=Math.max(d0,td(a.fs||a.ps));
       for(const [pid,ty,lag] of (a.preds||[])){const x=S[pid];if(!x)continue;
-        if(ty==='SS')s=Math.max(s,x.ES+lag*DAY);else if(ty==='FF')s=Math.max(s,x.EF+lag*DAY-fdur*DAY);else s=Math.max(s,x.EF+lag*DAY)}
+        if(ty==='SS')s=Math.max(s,x.ES+lag*DAY);else if(ty==='FF')s=Math.max(s,x.EF+lag*DAY-fdur*DAY);else if(ty==='SF')s=Math.max(s,x.ES+lag*DAY-fdur*DAY);else s=Math.max(s,x.EF+lag*DAY)}
       ES=s;EF=s+fdur*DAY;st='ns'}
     if(EF<ES)EF=ES;
     S[id]={ES,EF,st,dur,W:W[id]||0}}
@@ -349,7 +420,7 @@ function compute(p){
   for(let i=order.length-1;i>=0;i--){const id=order[i],x=S[id];if(x.st==='done'){x.TF=null;continue}
     let LF=target;const span=x.EF-Math.max(x.ES,d0);
     for(const [sid,ty,lag] of (succ[id]||[])){const y=S[sid];if(y.st!=='ns')continue;
-      if(ty==='SS')LF=Math.min(LF,y.LS-lag*DAY+span);else if(ty==='FF')LF=Math.min(LF,y.LF-lag*DAY);else LF=Math.min(LF,y.LS-lag*DAY)}
+      if(ty==='SS')LF=Math.min(LF,y.LS-lag*DAY+span);else if(ty==='FF')LF=Math.min(LF,y.LF-lag*DAY);else if(ty==='SF')LF=Math.min(LF,y.LF-lag*DAY+span);else LF=Math.min(LF,y.LS-lag*DAY)}
     x.LF=LF;x.LS=LF-span;x.TF=Math.round((LF-x.EF)/DAY)}
   // aggregates
   const disc={};
@@ -1197,7 +1268,7 @@ const LOCKED=()=>!!P().baseline;
 function lockBaseline(){const p=P();p.acts.forEach(a=>{a.bs=a.ps;a.bf=a.pf;a.bcost=a.cost});p.baseline={at:ds(Date.now()),by:ME?.name||ME?.u||'',start:p.start,finish:p.finish,cdd:p.cdd,n:p.acts.length,value:sum(p.acts,a=>a.cost||0)};save();route();toast('Baseline locked: from now on only progress is updated')}
 function baseBar(){const p=P();if(!p.acts.length)return '';const b=p.baseline,cx=C(),g=Math.round((cx.pEF-td(p.finish))/DAY);
   if(b)return `<div class="callout info" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between"><div><b>Baseline locked</b> on ${fD(b.at)}${b.by?' by '+esc(b.by):''}: ${b.n} activities, planned completion ${fD(b.finish)}. Only progress (actual dates, % complete, status, forecasts) can be updated; the forecast completion is rescheduled from progress: <b>${fT(cx.pEF)}</b> (${g>0?g+' days late':'on time'}).</div>${ME?.role==='admin'?'<button id="blUn">Unlock (admin)</button>':''}</div>`;
-  return can('admin')?`<div class="callout" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between"><div><b>Schedule not locked yet.</b> Review the plan (dates, values, links), then lock it as the baseline. After locking, only progress can be updated and the forecast completion reschedules from it.</div><button class="go" id="blLock">Lock baseline</button></div>`:''}
+  return can('admin')?`<div class="callout warn" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between"><div><b>Schedule not locked yet.</b> Review the plan (dates, values, links), then lock it as the baseline. After locking, only progress can be updated and the forecast completion reschedules from it.</div><button class="go" id="blLock">Lock baseline</button></div>`:''}
 function baseBind(){$('#blLock')&&($('#blLock').onclick=()=>dialog('Lock baseline',`<p>Lock the current schedule of <b>${esc(P().name)}</b> (${P().acts.length} activities, planned completion ${fD(P().finish)}) as the baseline?</p><p class="note">After this, planned dates, values, links and activities cannot be changed; DCI / MCI imports update progress only.</p>`,[['Lock baseline',()=>{$('#dlg').close();lockBaseline()},'go']]));
   $('#blUn')&&($('#blUn').onclick=()=>dialog('Unlock baseline',`<p>Unlock the baseline of <b>${esc(P().name)}</b>? Planned dates become editable again. Lock it again after re-planning.</p>`,[['Unlock',()=>{delete P().baseline;save();$('#dlg').close();route();toast('Baseline unlocked')},'pri']]))}
 for(const v of ['schedule','overview','engineering','procurement','update']){const f=V[v],g=f&&f.after;if(!f)continue;
@@ -1220,6 +1291,167 @@ setTimeout(()=>{const g=V.export&&V.export.after;if(!V.export)return;V.export.af
     if(a.steps&&x.steps)a.steps.forEach((s,i)=>{if(x.steps[i]){s[2]=x.steps[i][2];if(s.length>3||x.steps[i].length>3)s[3]=x.steps[i][3]??s[3]}});if(d==='E')eRecalc(a);else if(a.steps?.length>=10)pRecalc(a)});
   if(o.date)p.dataDate=o.date;(p.imports=p.imports||[]).push({d,file:o.file,at:new Date().toISOString(),n,by:ME?.u||'',progressOnly:1,skipped:skip});save()}}
 {const b0=impBind;impBind=function(d){b0(d);const inp=$('#imp'+d);if(!inp||!LOCKED())return;inp.closest('.card')?.querySelector('.note')?.insertAdjacentHTML('beforeend',' <b>Baseline locked:</b> importing updates progress (actual dates, status) of existing items only.')}}
+
+/* ============ Project plan: MS Project-style task sheet + Gantt (built in, free) ============ */
+const PL={coll:{},sel:null,zoom:'m',crit:false,q:'',lv:0,undo:[]};
+const PLC={n:['#','Row'],id:['ID','Task ID'],name:['Task name','Task name'],dur:['Dur','Duration, days'],ps:['Start','Start'],pf:['Finish','Finish'],preds:['Predecessors','Predecessors, e.g. E001SS+5d'],res:['Resource','Resource names'],pct:['%','% complete'],ms:['MS','Milestone'],tf:['Float','Total float, days'],var:['Var','Finish variance: forecast minus baseline, days']};
+const plCols=()=>{const h=JSON.parse(localStorage.getItem('epcpm.plcols')||'null')||['id','res','ms','var'];return Object.keys(PLC).filter(k=>k==='name'||!h.includes(k))};
+const plSnap=p=>{PL.undo.push(JSON.stringify(p.acts));if(PL.undo.length>40)PL.undo.shift()};
+const PXD={d:24,w:8,m:3,q:1.2};const RH=28;
+const predTxt=a=>(a.preds||[]).map(([i,t,l])=>i+((t||'FS')==='FS'&&!l?'':(t||'FS'))+(l?(l>0?'+':'')+l+'d':'')).join(', ');
+function parsePreds(s,ids){const out=[],bad=[];String(s||'').split(/[,;]+/).map(x=>x.trim()).filter(Boolean).forEach(x=>{const m=x.replace(/\s+/g,'').match(/^(.+?)(FS|SS|FF|SF)?([+-]\d+)?(d|days?)?$/i);
+  if(!m||!ids.has(m[1]))bad.push(x);else out.push([m[1],(m[2]||'FS').toUpperCase(),+(m[3]||0)])});return {out,bad}}
+/* MS Project-like auto scheduling of the plan (baseline) dates from links: tasks with predecessors start as soon as possible */
+function planForward(p){const by={};p.acts.forEach(a=>by[a.id]=a);const indeg={},succ={};p.acts.forEach(a=>{indeg[a.id]=0});
+  p.acts.forEach(a=>(a.preds||[]).forEach(([i])=>{if(by[i]){indeg[a.id]++;(succ[i]=succ[i]||[]).push(a.id)}}));
+  const q=p.acts.filter(a=>!indeg[a.id]).map(a=>a.id);let n=0;
+  while(q.length){const id=q.shift(),a=by[id];const dur=a.ms?0:Math.max(1,dd(a.pf,a.ps));
+    if((a.preds||[]).some(([i])=>by[i])){let s=-Infinity;for(const [i,t,l] of a.preds){const x=by[i];if(!x)continue;const xs=td(x.ps),xf=td(x.pf);
+        s=Math.max(s,t==='SS'?xs+l*DAY:t==='FF'?xf+l*DAY-dur*DAY:t==='SF'?xs+l*DAY-dur*DAY:xf+l*DAY)}
+      if(a.snet)s=Math.max(s,td(a.snet));const ns=ds(s);if(ns!==a.ps){a.ps=ns;n++}a.pf=a.ms?a.ps:addD(a.ps,dur)}
+    (succ[id]||[]).forEach(s=>{if(--indeg[s]===0)q.push(s)})}
+  const mx=p.acts.map(a=>a.pf).sort().pop();return {moved:n,finish:mx}}
+function plRows(p,cx){const rows=[],q=PL.q.toLowerCase();const ok=a=>(!q||(a.id+' '+a.name+' '+a.l2+' '+a.l3+' '+(a.res||'')).toLowerCase().includes(q))&&(!PL.crit||(cx.S[a.id].TF!=null&&cx.S[a.id].TF<=0&&a.pct<1));
+  const agg=(A,k,L,name,d)=>{const s=Math.min(...A.map(a=>td(a.ps))),f=Math.max(...A.map(a=>td(a.pf))),es=Math.min(...A.map(a=>cx.S[a.id].ES)),ef=Math.max(...A.map(a=>cx.S[a.id].EF)),c=sum(A,a=>a.cost||0);
+    return {sum:1,k,L,name,d,ps:ds(s),pf:ds(f),ES:es,EF:ef,pct:c?sum(A,a=>(a.cost||0)*(a.pct||0))/c:sum(A,a=>a.pct||0)/A.length,n:A.length}};
+  let num=0;const A0=p.acts.filter(ok);
+  for(const d of 'EPC'){const A=A0.filter(a=>a.d===d);if(!A.length)continue;const k1=d;rows.push(agg(A,k1,1,DN[d],d));if(PL.coll[k1])continue;
+    for(const l2 of [...new Set(A.map(a=>a.l2))]){const B=A.filter(a=>a.l2===l2),k2=k1+'|'+l2;rows.push(agg(B,k2,2,l2,d));if(PL.coll[k2])continue;
+      for(const l3 of [...new Set(B.map(a=>a.l3))]){const C3=B.filter(a=>a.l3===l3),k3=k2+'|'+l3;if(l3!==l2){rows.push(agg(C3,k3,3,l3,d));if(PL.coll[k3])continue}
+        C3.forEach(a=>rows.push({a,L:l3!==l2?4:3,d,ES:cx.S[a.id].ES,EF:cx.S[a.id].EF,TF:cx.S[a.id].TF}))}}}
+  return rows}
+V.plan=()=>{const p=P(),cx=C(),ed=can('edit'),lk=!!p.baseline,rows=(p.acts.length?plRows(p,cx):[]).filter(r=>!PL.lv||r.L<=PL.lv);
+  const x0=Math.min(td(p.start),...p.acts.map(a=>td(a.ps)))-14*DAY,x1=Math.max(td(p.finish),cx.pEF,...p.acts.map(a=>td(a.pf)))+30*DAY,px=PXD[PL.zoom],W=Math.ceil((x1-x0)/DAY*px),X=t=>(t-x0)/DAY*px;
+  const inp=(a,k,v,t='text',w=0,dis=false)=>`<input data-pl="${a.id}|${k}" type="${t}" value="${esc(v??'')}" ${w?`style="width:${w}px"`:''} ${(!ed||dis)?'disabled':''}>`;
+  const planDis=lk,vis=plCols(),
+    tr=rows.map((r,i)=>{const pad=`padding-left:${(r.L-1)*14+4}px`;let c;
+    if(r.sum){const vr=Math.round((r.EF-td(r.pf))/DAY);c={n:'',id:'',name:`<td style="${pad};font-weight:700;cursor:pointer" data-tog="${esc(r.k)}">${PL.coll[r.k]?'▸':'▾'} ${esc(r.name)} <span class="note">(${r.n})</span></td>`,
+      dur:`<td class="n">${Math.max(1,dd(r.pf,r.ps))}d</td>`,ps:`<td>${fD(r.ps)}</td>`,pf:`<td>${fD(r.pf)}</td>`,preds:'',res:'',pct:`<td class="n">${pc(r.pct,0)}</td>`,ms:'',tf:'',var:`<td class="n ${vr>0?'neg':''}">${vr||''}</td>`};
+      return `<tr class="plS" data-k="${esc(r.k)}">${vis.map(k=>c[k]||'<td></td>').join('')}</tr>`}
+    const a=r.a,crit=r.TF!=null&&r.TF<=0&&a.pct<1,vr=Math.round((r.EF-td(a.pf))/DAY);
+    c={n:`<td class="n" style="color:var(--mute)">${i+1}</td>`,id:`<td style="font-size:12px;color:var(--mute)">${esc(a.id)}</td>`,
+      name:`<td style="${pad}">${a.ms?'<span class="plMs">◆</span>':''}${inp(a,'name',a.name,'text',220,planDis)}</td>`,dur:`<td>${inp(a,'dur',a.ms?0:Math.max(1,dd(a.pf,a.ps)),'number',52,planDis)}</td>`,
+      ps:`<td>${inp(a,'ps',a.ps,'date',0,planDis)}</td>`,pf:`<td>${inp(a,'pf',a.pf,'date',0,planDis||a.ms)}</td>`,preds:`<td>${inp(a,'preds',predTxt(a),'text',96,planDis)}</td>`,
+      res:`<td>${inp(a,'res',a.res||'','text',96,planDis)}</td>`,pct:`<td>${inp(a,'pct',r2((a.pct||0)*100),'number',50)}</td>`,
+      ms:`<td style="text-align:center"><input type="checkbox" data-pl="${a.id}|ms" ${a.ms?'checked':''} ${(!ed||planDis)?'disabled':''}></td>`,
+      tf:`<td class="n ${crit?'neg':''}">${r.TF??''}</td>`,var:`<td class="n ${vr>0?'neg':''}">${vr||''}</td>`};
+    return `<tr data-row="${a.id}" class="${PL.sel===a.id?'plSel':''}">${vis.map(k=>c[k]).join('')}</tr>`}).join('');
+  /* gantt svg */
+  let grid='',t=x0;const d0=new Date(x0);let m=Date.UTC(d0.getUTCFullYear(),d0.getUTCMonth(),1);
+  while(m<=x1){const xx=X(m);if(xx>=0)grid+=`<line x1="${xx}" x2="${xx}" y1="0" y2="100%" stroke="var(--line)"/><text x="${xx+3}" y="14" font-size="11" fill="var(--mute)">${fM(m)}</text>`;const mm=new Date(m);m=Date.UTC(mm.getUTCFullYear(),mm.getUTCMonth()+1,1)}
+  if(px>=8){for(let w=x0;w<=x1;w+=7*DAY){const xx=X(w);grid+=`<line x1="${xx}" x2="${xx}" y1="22" y2="100%" stroke="var(--line)" stroke-dasharray="2 3"/>`}}
+  const drag=ed&&!lk,Y={},bars=rows.map((r,i)=>{const y=i*RH+RH/2;if(!r.sum)Y[r.a.id]={y,s:X(r.ES),f:X(r.EF)};
+    if(r.sum){const s=X(td(r.ps)),f=X(td(r.pf)),es=X(r.ES),ef=X(r.EF);return `<g><rect x="${es}" y="${y-4}" width="${Math.max(2,ef-es)}" height="8" fill="var(--plan)" opacity=".85"/><path d="M${es} ${y+4}l0 5l5 -5zM${ef} ${y+4}l0 5l-5 -5z" fill="var(--plan)"/></g>`}
+    const a=r.a,crit=r.TF!=null&&r.TF<=0&&a.pct<1,s=X(td(a.ps)),f=X(td(a.pf)),es=X(r.ES),ef=X(r.EF),tip=`${a.id} ${a.name}\nBaseline ${fD(a.ps)} → ${fD(a.pf)}\nForecast ${fT(r.ES)} → ${fT(r.EF)}\n${pc(a.pct)} complete${r.TF!=null?' · float '+r.TF+' d':''}`;
+    if(a.ms)return `<g><title>${esc(tip)}</title><rect x="${es-6}" y="${y-6}" width="12" height="12" transform="rotate(45 ${es} ${y})" fill="${a.pct>=1?'var(--act)':crit?'var(--fc)':'var(--plan)'}"/><text x="${es+10}" y="${y+4}" font-size="11" fill="var(--mute)">${fT(r.ES)}</text></g>`;
+    return `<g><title>${esc(tip)}</title><rect x="${s}" y="${y+5}" width="${Math.max(1.5,f-s)}" height="4" rx="2" fill="var(--plan)" opacity=".35"/><rect x="${es}" y="${y-7}" width="${Math.max(2,ef-es)}" height="11" rx="3" fill="${crit?'var(--fc)':DC[a.d]}" ${drag?`data-drag="${a.id}" style="cursor:grab"`:''}/><rect x="${es}" y="${y-7}" width="${Math.max(0,(ef-es)*clamp(a.pct||0))}" height="11" rx="3" fill="var(--act)" pointer-events="none"/>${drag?`<rect data-rsz="${a.id}" x="${ef-3}" y="${y-8}" width="6" height="13" fill="transparent" style="cursor:ew-resize"/>`:''}${px>=3?`<text x="${ef+4}" y="${y+2}" font-size="11" fill="var(--mute)">${esc((a.res||'').slice(0,18))}</text>`:''}</g>`}).join('');
+  let links='';rows.forEach(r=>{if(r.sum)return;(r.a.preds||[]).forEach(([i,t])=>{const A=Y[i],B=Y[r.a.id];if(!A||!B)return;const sx=t==='SS'||t==='SF'?A.s:A.f,tx=t==='FF'||t==='SF'?B.f:B.s,dir=t==='FF'||t==='SF'?1:-1;
+    links+=`<path d="M${sx} ${A.y}h${dir<0?6:-6}V${B.y}H${tx+dir*1}" fill="none" stroke="var(--mute)" stroke-width="1" marker-end="url(#arr)" opacity=".7"/>`})});
+  const H=Math.max(1,rows.length)*RH;PL.px=px;PL.x0=x0;PL.xd=X(cx.d0);
+  return hdr('Project plan (MS Project style)')+`
+  <div class="tools" style="flex-wrap:wrap">${ed&&!lk?'<button class="go" id="plIns" title="Insert a task below the selected row">+ Task</button><button id="plMs" title="Insert a milestone below the selected row">+ Milestone</button><button id="plDel" title="Delete the selected task">Delete</button><button id="plAuto" title="Move tasks to start as soon as their predecessors allow">Auto-schedule</button><span class="sep"></span><button id="plWbs" title="Move the selected task to another WBS group">WBS group</button><button id="plUndo" title="Undo (Ctrl+Z)" '+(PL.undo.length?'':'disabled')+'>↶ Undo</button>':''}
+   <label>Show <select id="plLv">${[[0,'All levels'],[1,'Level 1 (phases)'],[2,'Level 2'],[3,'Level 3'],[4,'Level 4 (tasks)']].map(([k,l])=>`<option value="${k}" ${PL.lv==k?'selected':''}>${l}</option>`).join('')}</select></label><span class="sep"></span><button id="plCols">Columns</button><button id="plFs" title="Hide the menu to give the plan the whole screen">⛶ Full screen</button><button id="plToday" title="Scroll the Gantt chart to the data date">Data date</button><button id="plPr">Print / PDF</button>
+   <span class="sep"></span><label>Zoom <select id="plZ">${[['d','Days'],['w','Weeks'],['m','Months'],['q','Quarters']].map(([k,l])=>`<option value="${k}" ${PL.zoom===k?'selected':''}>${l}</option>`).join('')}</select></label>
+   <button id="plCol">Collapse all</button><button id="plExp">Expand all</button><label><input type="checkbox" id="plCr" ${PL.crit?'checked':''}> Critical path only</label><input id="plQ" placeholder="Search tasks" value="${esc(PL.q)}" style="width:150px">
+   <span class="sep"></span><button id="plX" title="Save as MS Project XML; open it in MS Project with File → Open">Save .xml</button>${ed?'<label class="btn">Open .xml<input type="file" id="plI" accept=".xml,text/xml,application/xml" hidden></label>':''}</div>
+  <p class="note">Edit cells like a task sheet: duration in days, predecessors as <b>E001</b> (finish-to-start), <b>E001SS+5d</b>, <b>P003FF-2d</b> or <b>C010SF</b>, separated by commas. ${lk?'<b>Baseline locked:</b> only % complete can be changed here; use Progress update for actual dates.':'Tasks with predecessors move automatically, as in MS Project. Drag a bar to move a task, drag its right end to change the duration.'} Planned (baseline) bars are thin grey; forecast bars are coloured, red when critical; green fill shows progress.</p>
+  ${rows.length?`<div class="pl" style="display:flex;border:1px solid var(--line);border-radius:8px;overflow:auto;max-height:74vh;position:relative">
+   <div class="scroll plL" style="flex:none;overflow:visible;position:sticky;left:0;z-index:2;background:var(--bg);border-right:2px solid var(--line)"><table class="plT"><thead><tr>${vis.map(k=>`<th title="${PLC[k][1]}">${PLC[k][0]}</th>`).join('')}</tr></thead><tbody>${tr}</tbody></table></div>
+   <div style="flex:none"><div style="position:sticky;top:0;height:30px;background:var(--sheet);z-index:1"><svg width="${W}" height="30">${grid}</svg></div>
+    <svg width="${W}" height="${H}" style="display:block"><defs><marker id="arr" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0 0L6 3L0 6z" fill="var(--mute)"/></marker></defs>
+    ${rows.map((r,i)=>r.sum?`<rect x="0" y="${i*RH}" width="${W}" height="${RH}" fill="var(--line)" opacity=".35"/>`:'').join('')}${grid.replace(/<text[^>]*>[^<]*<\/text>/g,'')}<line x1="${X(cx.d0)}" x2="${X(cx.d0)}" y1="0" y2="${H}" stroke="var(--ink,#000)" stroke-dasharray="4 3"/>${links}${bars}</svg></div></div>`
+   :`<div class="callout ok">No tasks yet. ${ed?'Click Insert task, open an MS Project .xml file, or import the DCI / MCI under Engineering and Procurement.':''}</div>`}
+  <p class="note">${p.acts.length} tasks · planned finish ${fD(p.acts.map(a=>a.pf).sort().pop()||p.finish)} · forecast finish ${fT(cx.pEF)}. MS Project can open the saved .xml (File → Open → XML Format), and files saved from MS Project as XML open here.</p>`};
+V.plan.after=()=>{const p=P(),by={};p.acts.forEach(a=>by[a.id]=a);const ids=new Set(p.acts.map(a=>a.id));
+  const pl=$('.pl');if(pl&&PL.scroll){pl.scrollTop=PL.scroll[0];pl.scrollLeft=PL.scroll[1]}const keep=()=>{if(pl)PL.scroll=[pl.scrollTop,pl.scrollLeft]};
+  $$('[data-tog]').forEach(el=>el.onclick=()=>{keep();PL.coll[el.dataset.tog]=!PL.coll[el.dataset.tog];route()});
+  $$('[data-row]').forEach(el=>el.onclick=()=>{$$('.plSel').forEach(x=>x.classList.remove('plSel'));el.classList.add('plSel');PL.sel=el.dataset.row});
+  $$('[data-pl]').forEach(el=>el.onchange=()=>{plSnap(p);const [id,k]=el.dataset.pl.split('|'),a=by[id];let v=el.type==='checkbox'?el.checked:el.value;
+    if(k==='name')a.name=v||a.name;else if(k==='res')a.res=v;
+    else if(k==='dur'){const n=Math.max(0,Math.round(+v||0));if(n===0){a.ms=true;a.pf=a.ps}else{a.ms=false;a.pf=addD(a.ps,n)}}
+    else if(k==='ps'){if(!v)return;const dur=a.ms?0:Math.max(1,dd(a.pf,a.ps));a.ps=v;if((a.preds||[]).length)a.snet=v;a.pf=a.ms?v:addD(v,dur)}
+    else if(k==='pf'){if(!v||td(v)<td(a.ps))return toast('Finish must be on or after start');a.pf=v}
+    else if(k==='ms'){a.ms=v;if(v)a.pf=a.ps;else if(a.pf===a.ps)a.pf=addD(a.ps,1)}
+    else if(k==='pct'){a.pct=clamp((+v||0)/100);if(a.pct>0&&!a.as)a.as=p.dataDate;if(a.pct>=1&&!a.af)a.af=p.dataDate;if(a.pct<1)a.af=null}
+    else if(k==='preds'){const r=parsePreds(v,ids);if(r.bad.length)toast('Unknown task ID or format: '+r.bad.join(', '));if(r.out.some(q=>q[0]===id))return toast('A task cannot depend on itself');const keepAuto=(a.preds||[]).filter(q=>q[3]==='auto'&&r.out.some(o=>o[0]===q[0]));a.preds=r.out.map(o=>keepAuto.find(q=>q[0]===o[0])?[...o,'auto']:o)}
+    if(!p.baseline&&['dur','ps','pf','preds','ms'].includes(k))planForward(p);keep();save();route()});
+  const sel=()=>PL.sel&&by[PL.sel];
+  const ins=ms=>{plSnap(p);const s=sel(),base=s||p.acts[p.acts.length-1]||{d:'C',l2:'General',l3:'General',ps:p.dataDate};const d=base.d||'C';let k=1;while(ids.has(d+String(k).padStart(3,'0')))k++;
+    const id=d+String(k).padStart(3,'0'),st=base.pf||p.dataDate,a={id,d,l2:base.l2||'General',l3:base.l3||base.l2||'General',name:ms?'New milestone':'New task',ps:st,pf:ms?st:addD(st,5),fs:null,ff:null,as:null,af:null,pct:0,cost:0,ac:0,qty:1,uom:ms?'Milestone':'Lot',prof:'Linear',res:'',crew:1,preds:s?[[s.id,'FS',0]]:[],ms:!!ms||undefined};
+    const i=s?p.acts.indexOf(s)+1:p.acts.length;p.acts.splice(i,0,a);PL.sel=id;planForward(p);keep();save();route();setTimeout(()=>{const el=$(`[data-pl="${id}|name"]`);el&&(el.focus(),el.select())},50)};
+  $('#plIns')&&($('#plIns').onclick=()=>ins(false));$('#plMs')&&($('#plMs').onclick=()=>ins(true));
+  $('#plDel')&&($('#plDel').onclick=()=>{const s=sel();if(!s)return toast('Click a task row first');dialog('Delete task',`<p>Delete <b>${esc(s.id)} ${esc(s.name)}</b>? Links to it are removed.</p>`,[['Delete',()=>{plSnap(p);p.acts=p.acts.filter(x=>x!==s);p.acts.forEach(x=>x.preds=(x.preds||[]).filter(q=>q[0]!==s.id));PL.sel=null;$('#dlg').close();keep();save();route()},'pri']])});
+  $('#plAuto')&&($('#plAuto').onclick=()=>{plSnap(p);const r=planForward(p);keep();save();route();toast(`${r.moved} tasks moved to follow their links; planned finish ${fD(r.finish)}`)});
+  $('#plZ').onchange=e=>{PL.zoom=e.target.value;route()};$('#plCr').onchange=e=>{PL.crit=e.target.checked;route()};$('#plQ').onchange=e=>{PL.q=e.target.value;route()};
+  $('#plCol').onclick=()=>{p.acts.forEach(a=>{PL.coll[a.d]=true});route()};$('#plExp').onclick=()=>{PL.coll={};route()};
+  $('#plX').onclick=()=>download(`${(p.code||p.name).replace(/\W+/g,'_')}_plan.xml`,mspdi(p,C(),4,''),'application/xml');
+  const fi=$('#plI');fi&&(fi.onchange=()=>{const f=fi.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const o=parseMSPDI(String(r.result),f.name);mspImportDlg(o)}catch(e){toast('Could not read the file: '+e.message)}};r.readAsText(f)});
+  plExtra(p,by,keep,pl)};
+/* ---------- MS Project XML (MSPDI) import ---------- */
+function parseMSPDI(xml,fname){const doc=new DOMParser().parseFromString(xml,'application/xml');if(doc.getElementsByTagName('parsererror').length)throw new Error('not a valid XML file');
+  const kid=(el,n)=>{for(const c of el.children)if(c.localName===n)return c;return null},tx=(el,n)=>kid(el,n)?.textContent?.trim()||'';
+  const proj=doc.documentElement;if(proj.localName!=='Project')throw new Error('this is not an MS Project XML file (save it in MS Project with File → Save As → XML Format)');
+  const tasksEl=kid(proj,'Tasks');if(!tasksEl)throw new Error('the file has no tasks');
+  const res={};const RE=kid(proj,'Resources');RE&&[...RE.children].forEach(r=>res[tx(r,'UID')]=tx(r,'Name'));
+  const asg={};const AE=kid(proj,'Assignments');AE&&[...AE.children].forEach(a=>{const n=res[tx(a,'ResourceUID')];if(n)(asg[tx(a,'TaskUID')]=asg[tx(a,'TaskUID')]||[]).push(n)});
+  const T=[...tasksEl.children].filter(t=>t.localName==='Task').map(t=>{const bl=[...t.children].find(c=>c.localName==='Baseline'&&tx(c,'Number')==='0');
+    return {uid:tx(t,'UID'),name:tx(t,'Name'),lvl:+tx(t,'OutlineLevel')||1,sum:tx(t,'Summary')==='1',ms:tx(t,'Milestone')==='1',null:tx(t,'IsNull')==='1',
+      st:tx(t,'Start').slice(0,10),fi:tx(t,'Finish').slice(0,10),bs:bl?tx(bl,'Start').slice(0,10):'',bf:bl?tx(bl,'Finish').slice(0,10):'',pct:(+tx(t,'PercentComplete')||0)/100,
+      as:tx(t,'ActualStart').slice(0,10),af:tx(t,'ActualFinish').slice(0,10),cost:+tx(t,'Cost')||0,
+      links:[...t.children].filter(c=>c.localName==='PredecessorLink').map(l=>({uid:tx(l,'PredecessorUID'),type:['FF','FS','SF','SS'][+tx(l,'Type')]||'FS',lag:Math.round((+tx(l,'LinkLag')||0)/(tx(l,'LagFormat')==='8'||tx(l,'LagFormat')==='4'?14400:4800))}))}}).filter(t=>t.uid!=='0'&&!t.null&&t.name);
+  const title=tx(proj,'Title')||tx(proj,'Name').replace(/\.xml$/i,'')||fname.replace(/\.xml$/i,'');
+  const stack=[],out=[],cnt={E:0,P:0,C:0},map={};
+  T.forEach(t=>{stack.length=t.lvl-1;if(t.sum){stack[t.lvl-1]=t.name;return}const path=stack.filter(Boolean),txt=(path.join(' ')+' '+t.name).toLowerCase();
+    const d=/engineer|design|drawing|document|dci/.test(txt)?'E':/procure|supply|material|purchas|vendor|mci|order|delivery/.test(txt)?'P':'C';
+    const id=d+String(++cnt[d]).padStart(3,'0');map[t.uid]=id;const ps=t.bs||t.st,pf=t.bf||t.fi;
+    out.push({id,d,l2:path[1]||path[0]||'General',l3:path[2]||path[1]||path[0]||'General',name:t.name,ps,pf:t.ms?ps:(td(pf)>td(ps)?pf:addD(ps,1)),fs:t.bs?t.st:null,ff:t.bf?t.fi:null,
+      as:t.as||null,af:t.af||null,pct:t.pct,cost:t.cost,ac:0,qty:1,uom:t.ms?'Milestone':'Lot',prof:'Linear',res:(asg[t.uid]||[]).join(', '),crew:1,ms:t.ms||undefined,_links:t.links,src:'MSP'})});
+  out.forEach(a=>{a.preds=a._links.filter(l=>map[l.uid]).map(l=>[map[l.uid],l.type,l.lag]);delete a._links});
+  if(out.length&&out.every(a=>!a.cost))out.forEach(a=>a.cost=1);
+  else if(out.some(a=>a.cost>1e5))out.forEach(a=>a.cost=Math.round(a.cost/1e5*1000)/1000);
+  return {title,acts:out}}
+function mspImportDlg(o){const p=P();if(!o.acts.length)return toast('No tasks found in the file');const s=o.acts.map(a=>a.ps).sort()[0],f=o.acts.map(a=>a.pf).sort().pop();
+  dialog('Open MS Project file',`<p><b>${o.acts.length} tasks</b> found in “${esc(o.title)}” (${fD(s)} → ${fD(f)}), with ${sum(o.acts,a=>a.preds.length)} links. Summary tasks become the WBS groups.</p>
+   <label class="f">Open as<select id="mspT"><option value="new">A new project “${esc(o.title)}”</option><option value="cur" ${p.baseline?'disabled':''}>Replace the tasks of ${esc(p.name)}${p.baseline?' (baseline locked)':''}</option></select></label>`,
+   [['Open',()=>{let q;if($('#mspT').value==='cur'){q=p;q.acts=o.acts}else{q={id:'p'+Date.now().toString(36),name:o.title,code:'',client:'',consultant:'',location:'',currency:p.currency||'INR lakh',contractValue:sum(o.acts,a=>a.cost),
+      start:s,finish:f,cdd:f,dataDate:ds(Date.now()),weights:{E:.2,P:.5,C:.3},catW:{},zones:{},resCap:{},acFactor:1,acts:o.acts,snaps:[],notes:'Opened from MS Project XML.'};DB.projects.push(q)}
+      if(td(s)<td(q.start))q.start=s;if(td(f)>td(q.finish))q.finish=f;DB.active=q.id;$('#dlg').close();save();route();toast(`${o.acts.length} tasks opened from MS Project`)},'go']])}
+
+/* ---------- planner extras: undo, outline level, data date, print, WBS group, drag / resize bars ---------- */
+function plExtra(p,by,keep,pl){
+  if(PL.up!==p.id){PL.undo=[];PL.up=p.id}
+  const undo=()=>{const u=PL.undo.pop();if(!u)return toast('Nothing to undo');p.acts=JSON.parse(u);keep();save();route();toast('Undone')};
+  $('#plUndo')&&($('#plUndo').onclick=undo);
+  document.onkeydown=e=>{if(location.hash.slice(1)!=='plan'||!(e.ctrlKey||e.metaKey)||e.key.toLowerCase()!=='z'||p.baseline)return;const t=e.target;if(t&&/INPUT|TEXTAREA|SELECT/.test(t.tagName))return;e.preventDefault();undo()};
+  $('#plCols').onclick=()=>{const v=plCols();dialog('Columns in the task sheet',`<div class="chk">${Object.entries(PLC).filter(([k])=>k!=='name').map(([k,[l,t]])=>`<label><input type="checkbox" data-col="${k}" ${v.includes(k)?'checked':''}> ${t}</label>`).join('')}</div><p class="note">Fewer columns leave more room for the Gantt chart.</p>`,
+    [['Apply',()=>{const h=$$('[data-col]').filter(x=>!x.checked).map(x=>x.dataset.col);localStorage.setItem('epcpm.plcols',JSON.stringify(h));$('#dlg').close();route()},'go']])};
+  $('#plFs').onclick=()=>{document.body.classList.toggle('plFull')};
+  $('#plLv').onchange=e=>{PL.lv=+e.target.value;keep();route()};
+  $('#plToday').onclick=()=>{if(!pl)return;const L=$('.plL');pl.scrollLeft=Math.max(0,PL.xd-200);L&&(pl.scrollLeft=Math.max(0,PL.xd-pl.clientWidth/2+L.offsetWidth))};
+  $('#plPr').onclick=()=>{document.body.classList.add('prPlan');setTimeout(()=>{window.print();document.body.classList.remove('prPlan')},50)};
+  $('#plWbs')&&($('#plWbs').onclick=()=>{const a=PL.sel&&by[PL.sel];if(!a)return toast('Click a task row first');
+    const L2=[...new Set(p.acts.map(x=>x.l2))],L3=[...new Set(p.acts.map(x=>x.l3))];
+    dialog('Change WBS group',`<p><b>${esc(a.id)} ${esc(a.name)}</b></p><div class="grid2"><label>Phase<select id="wD">${['E','P','C'].map(d=>`<option value="${d}" ${a.d===d?'selected':''}>${DN[d]}</option>`).join('')}</select></label>
+      <label>Level 2 group<input id="wL2" list="wl2" value="${esc(a.l2||'')}"></label><label>Level 3 group<input id="wL3" list="wl3" value="${esc(a.l3||'')}"></label></div>
+      <datalist id="wl2">${L2.map(x=>`<option value="${esc(x)}">`).join('')}</datalist><datalist id="wl3">${L3.map(x=>`<option value="${esc(x)}">`).join('')}</datalist>
+      <p class="note">Leave Level 3 equal to Level 2 to place the task directly under the Level 2 group (outdent).</p>`,
+      [['Move',()=>{plSnap(p);a.d=$('#wD').value;a.l2=$('#wL2').value.trim()||'General';a.l3=$('#wL3').value.trim()||a.l2;$('#dlg').close();keep();save();route();toast('Task moved')},'go']])});
+  /* drag a forecast bar to move the task; drag its right end to change the duration */
+  let D=null;
+  const start=(el,mode)=>e=>{const a=by[el.dataset[mode==='m'?'drag':'rsz']];if(!a)return;e.preventDefault();e.stopPropagation();
+    const bar=$(`[data-drag="${a.id}"]`);D={a,mode,x:e.clientX,bar,x0:+bar.getAttribute('x'),w0:+bar.getAttribute('width'),days:0};el.setPointerCapture?.(e.pointerId);
+    document.body.style.cursor=mode==='m'?'grabbing':'ew-resize'};
+  $$('[data-drag]').forEach(el=>el.onpointerdown=start(el,'m'));$$('[data-rsz]').forEach(el=>el.onpointerdown=start(el,'r'));
+  const mv=e=>{if(!D)return;const dx=e.clientX-D.x;D.days=Math.round(dx/PL.px);const sx=D.days*PL.px;
+    if(D.mode==='m')D.bar.setAttribute('x',D.x0+sx);else D.bar.setAttribute('width',Math.max(PL.px,D.w0+sx));
+    toast(`${D.a.id}: ${D.mode==='m'?'move':'duration'} ${D.days>0?'+':''}${D.days} d`)};
+  const up=()=>{if(!D)return;const {a,mode,days}=D;D=null;document.body.style.cursor='';if(!days)return;plSnap(p);
+    if(mode==='m'){a.ps=addD(a.ps,days);a.pf=a.ms?a.ps:addD(a.pf,days);if((a.preds||[]).length)a.snet=a.ps}
+    else{const dur=Math.max(1,dd(a.pf,a.ps)+days);a.pf=addD(a.ps,dur);a.ms=false}
+    planForward(p);keep();save();route();toast(`${a.id} ${mode==='m'?'moved':'resized'}: ${fD(a.ps)} → ${fD(a.pf)}`)};
+  window.onpointermove=mv;window.onpointerup=up}
+
+addEventListener('hashchange',()=>{if(location.hash!=='#plan')document.body.classList.remove('plFull')});
 /* ---------- line diagram ---------- */
 let LIN={by:'l3',wp:''};
 const PAL=['#00a86b','#3b7ddd','#e8a200','#ff5c8a','#7b5cd6','#1aa6b7','#c2410c','#5b6661','#0f766e','#b45309','#be185d','#4d7c0f'];
